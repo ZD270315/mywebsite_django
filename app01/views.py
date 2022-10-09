@@ -40,6 +40,41 @@ def orm(request):
     :param request:
     :return:
     """
-    UserInfo.objects.create(name="大多", password="666", age=16)
-    UserInfo.objects.create(name="金多", password="999", age=15)
+    #    UserInfo.objects.create(name="大多", password="666", age=16)
+    #    UserInfo.objects.create(name="金多", password="999", age=15)
+    #   UserInfo.objects.filter(id=3).delete()
+    """
+    data_list = UserInfo.objects.all()
+    for obj in data_list:
+        print(obj.name, obj.password, obj.age)
+    """
+    # UserInfo.objects.filter(name="金多").update(age=9)
+    UserInfo.objects.create(name="阿多", password="666", age=16)
+
     return HttpResponse("成功")
+
+
+def info_list(request):
+    # 数据库中的用户信息
+    data_list = UserInfo.objects.all()
+
+    return render(request, "info_list.html", {"data_list": data_list})
+
+
+def info_add(request):
+    if request.method == "GET":
+        return render(request, 'info_add.html')
+    # 获取到网页填入的信息
+    user = request.POST.get("user")
+    pwd = request.POST.get("pwd")
+    age = request.POST.get("age")
+    # 网数据库添加信息
+    UserInfo.objects.create(name=user, password=pwd, age=age)
+
+    return redirect("/info/list/")
+
+
+def info_delete(request):
+    nid = request.GET.get("nid")
+    UserInfo.objects.filter(id=nid).delete()
+    return redirect("/info/list/")
